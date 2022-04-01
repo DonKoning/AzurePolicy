@@ -1,10 +1,8 @@
 # Azure Policy Governance
 
-<br>
-
 # Introduction
 
-Policy-driven governance is one of the Azure Landing Zones design principles of the Cloud Adoption Framework. By leveraging Azure Policy to provide security- and service management guardrails for Azure Landing Zones, more autonomy for application teams can be provided. This document contains an approach to a naming convention and governance model for Azure Policy.
+Policy-driven governance is one of the [Azure Landing Zones](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/landing-zone/) design principles of the [Microsoft Cloud Adoption Framework](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/). By leveraging Azure Policy to provide security- and service management guardrails for Azure Landing Zones, more autonomy for application teams can be provided. This document contains an approach to a naming convention and governance model for Azure Policy.
 
 <br>
 
