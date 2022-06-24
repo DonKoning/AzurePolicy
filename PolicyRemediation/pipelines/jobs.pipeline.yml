@@ -1,0 +1,93 @@
+﻿parameters:
+  - name: scope
+  - name: managementGroupName
+  - name: subscriptionId
+  - name: resourceGroup
+    default: optional
+  - name: resourceId
+    default: optional
+  - name: policyAssignmentName
+    default: optional
+  - name: policyDefinitionName
+    default: optional
+  - name: policyDefinitionReferenceId
+    default: optional
+  - name: serviceConnection
+
+jobs:
+    ############################################################################################################
+    ###### Scope management group
+    ############################################################################################################
+  - job: managementGroup
+    displayName: Scope Management group
+    dependsOn: []
+    condition: eq('${{ parameters.scope }}', 'managementGroup') 
+
+    steps:
+      - checkout: self
+
+      - task: AzurePowerShell@4
+        name: createParamSet
+        displayName: Create Parameter Set
+        inputs:
+          azureSubscription: ${{ parameters.serviceConnection }}
+          azurePowerShellVersion: LatestVersion
+          scriptType: 'FilePath'
+          ScriptPath: $(System.DefaultWorkingDirectory)/scripts/create-parameterSet.ps1
+          ScriptArguments: 
+            '-scope ${{ parameters.scope }}
+            -managementGroupName ${{ parameters.managementGroupName }}
+            -resourceGroup ${{ parameters.resourceGroup }}
+            -policyAssignmentName ${{ parameters.policyAssignmentName }}
+            -policyDefinitionName ${{ parameters.policyDefinitionName }}
+            -policyDefinitionReferenceId ${{ parameters.policyDefinitionReferenceId }}'
+
+      - task: AzurePowerShell@5
+        name: startRemediation
+        displayName: 'Start Policy Remediation'
+        inputs:
+          azureSubscription: ${{ parameters.serviceConnection }}
+          azurePowerShellVersion: LatestVersion
+          scriptType: 'FilePath'
+          ScriptPath: $(System.DefaultWorkingDirectory)/scripts/Start-PolicyRemediation.ps1
+          ScriptArguments: '$(createParamSet.parameterSet)'
+
+    ############################################################################################################
+    ###### Scope subscription
+    ############################################################################################################
+  - job: subscription
+    displayName: Scope Subscription
+    dependsOn: []
+    condition: eq('${{ parameters.scope }}', 'subscription')
+
+    steps:
+      - checkout: self
+
+      - task: AzurePowerShell@5
+        name: createParamSet
+        displayName: Create Parameter Set
+        inputs:
+          azureSubscription: ${{ parameters.serviceConnection }}
+          azurePowerShellVersion: LatestVersion
+          scriptType: 'FilePath'
+          ScriptPath: $(System.DefaultWorkingDirectory)/scripts/create-parameterSet.ps1
+          ScriptArguments: 
+            '-scope ${{ parameters.scope }}
+            -subscriptionId ${{ parameters.subscriptionId }}
+            -resourceGroup ${{ parameters.resourceGroup }}
+            -resourceId ${{ parameters.resourceId }}
+            -policyAssignmentName ${{ parameters.policyAssignmentName }}
+            -policyDefinitionName ${{ parameters.policyDefinitionName }}
+            -policyDefinitionReferenceId ${{ parameters.policyDefinitionReferenceId }}'
+        env:
+          SYSTEM_DEBUG: $(System.Debug)
+
+      - task: AzurePowerShell@5
+        name: startRemediation
+        displayName: 'Start Policy Remediation'
+        inputs:
+          azureSubscription: ${{ parameters.serviceConnection }}
+          azurePowerShellVersion: LatestVersion
+          scriptType: 'FilePath'
+          ScriptPath: $(System.DefaultWorkingDirectory)/scripts/Start-PolicyRemediation.ps1
+          ScriptArguments: '$(createParamSet.parameterSet)'

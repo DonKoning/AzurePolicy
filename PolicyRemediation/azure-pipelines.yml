@@ -1,0 +1,70 @@
+﻿# This is a sample main pipeline
+
+pr: none
+trigger: none
+
+parameters:
+  - name: scope
+    type: string
+    displayName: Select the target scope for remediation
+    values:
+      - subscription
+      - managementGroup
+    default: subscription
+
+  - name: managementGroupName
+    type: string
+    displayName: Target Management Group Name for remediation (mandatory when scope is managementGroup)
+    default: mandatory
+    
+  - name: subscriptionId
+    type: string
+    displayName: Target SubscriptionId for remediation (mandatory when scope is subscription)
+    default: mandatory
+
+  - name: resourceGroup
+    type: string
+    displayName: Target Resource Group for remediation (optional)
+    default: optional
+    
+  - name: resourceId
+    type: string
+    displayName: Target Resource Id for remediation (optional)
+    default: optional
+
+  - name: policyAssignmentName
+    type: string
+    displayName: Policy Assignment Name for remediation (optional)
+    default: optional
+
+  - name: policyDefinitionName
+    type: string
+    displayName: Policy Definition Name for remediation (optional)
+    default: optional
+
+  - name: policyDefinitionReferenceId
+    type: string
+    displayName: Policy Definition Reference Id for remediation (optional)
+    default: optional
+
+  - name: serviceConnection
+    type: string
+    displayName: Service Connection name (mandatory)
+
+# just pass all params to the jobs.pipeline to sort them out
+stages:
+  - stage: automatedPolicyRemediation
+    displayName: Automated Policy Remediation
+    condition: or(ne('${{ parameters.managementGroupName }}', 'mandatory'), ne('${{ parameters.subscriptionId }}', 'mandatory'))
+    jobs:
+      - template: pipelines/steps.pipeline.yml@self
+        parameters:
+          scope: ${{ parameters.scope }}
+          managementGroupName: ${{ parameters.managementGroupName }}
+          subscriptionId: ${{ parameters.subscriptionId }}
+          resourceGroup: ${{ parameters.resourceGroup }}
+          resourceId: ${{ parameters.resourceId }}
+          policyAssignmentName: ${{ parameters.policyAssignmentName }}
+          policyDefinitionName: ${{ parameters.policyDefinitionName }}
+          policyDefinitionReferenceId: ${{ parameters.policyDefinitionReferenceId }}
+          serviceConnection: ${{ parameters.serviceConnection }}
