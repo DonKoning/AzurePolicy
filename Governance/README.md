@@ -195,7 +195,7 @@ The table below contains the rationale for the different components of the namin
 |:------------------|:----------|
 | Name | The name property of a Policy Definition must be unique and is used to reference a specific PolicyDefinitionId <br> To support multiple major versions of a Policy, the major version is part of the name. A prefix helps to distinguish between built-in and your custom policies and allows for easy filtering in the Compliance dashboard. Try to limit the prefix to 3-4 char max. |
 | displayName | The displayName is a ‘human friendly’ version of the name property as it’s the displayName that is visible in the Azure Portal. |
-| Descirption | Required to understand the purpose/effect of the Policy definition. |
+| Description | Required to understand the purpose/effect of the Policy definition. |
 | Major version | Only major changes require a new policy definition. Minor and patch updates are applied within the current version. |
 | Version (metadata) | Sematic versioning is used to track minor and patch updates within the major version. <br> Updating the version in the Policy definition helps when developing or troubleshooting. <br> The Policy Definition version is tied to the content in ‘release notes’ (optional). |
 | Catagory (metadata) | Can be used to designate the Azure Service the policy affects (also part of the name). Can be used to designate scope (e.g. regional/global). Can be used to relate to either Security Control or Service Management Control. |
