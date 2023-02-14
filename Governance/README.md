@@ -141,7 +141,7 @@ As the policy artifacts are stored as code, we need a naming convention for the 
 | **Artifact** | **Standard** | **Example(s)** |
 | :-- | :-- | :-- |
 | PolicyDefinition | \<prefix>-\<service/scope>-\<effect>-\<description>-v\<major version>.json | cto-sa-audit-firewall-settings-v1.json <br> cto-sa-dine-diagnostic-settings.v1.json |
-| PolicyInitiativeDefinitions | \<initiative>-\<scope/service>-\v<major version>.json | initiative-keyvault-v1.json <br> initiative-platform-locations.v1.json |
+| PolicyInitiativeDefinitions | \<initiative>-\<scope/service>-v<major version>.json | initiative-keyvault-v1.json <br> initiative-platform-locations.v1.json |
 
 <br>
 
