@@ -57,7 +57,7 @@ stages:
     displayName: Automated Policy Remediation
     condition: or(ne('${{ parameters.managementGroupName }}', 'mandatory'), ne('${{ parameters.subscriptionId }}', 'mandatory'))
     jobs:
-      - template: pipelines/steps.pipeline.yml@self
+      - template: pipelines/jobs.pipeline.yml@self
         parameters:
           scope: ${{ parameters.scope }}
           managementGroupName: ${{ parameters.managementGroupName }}
