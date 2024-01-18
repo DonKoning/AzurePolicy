@@ -136,9 +136,9 @@ function Start-AzPolicyRemediationPerResource {
 
         # Should result in a single resource match based on PolicyReferenceId
 
-        Write-Verbose "`tProcess resourceId '$ResourceId'..."
+        Write-Verbose "`tProcess resourceId '$ResourceId'..."  -Verbose
 
-        Write-Verbose "`tCreate parameter object"
+        Write-Verbose "`tCreate parameter object"  -Verbose
         $ParameterHashTable = @{ 
             'Name'                        = "Automated-remediation-$PolicyName-$($PolicyReferenceId)"
             'PolicyAssignmentId'          = "$PolicyAssignmentId"
@@ -149,7 +149,7 @@ function Start-AzPolicyRemediationPerResource {
         try {
             $Job = Start-AzPolicyRemediation @ParameterHashTable -AsJob
 
-            Write-Verbose "`tStarted Policy Remediation task with JobId '$($Job.Id)' for Policy Definition '$PolicyName' with ReferenceId '$PolicyReferenceId'"
+            Write-Verbose "`tStarted Policy Remediation task with JobId '$($Job.Id)' for Policy Definition '$PolicyName' with ReferenceId '$PolicyReferenceId'" -Verbose
             $NoOfRemediationTasks++
         }
         catch {
@@ -160,8 +160,8 @@ function Start-AzPolicyRemediationPerResource {
         Write-Warning "`tNo matching condition found"    
     }
 
-    Write-Verbose "`tExit function Start-AzPolicyRemediationPerResource"
-    Write-Verbose ""
+    Write-Verbose "`tExit function Start-AzPolicyRemediationPerResource" -Verbose
+    Write-Verbose "" -Verbose
     return $NoOfRemediationTasks
 }
 
@@ -315,14 +315,14 @@ do{
 
         if([bool]$NonCompliantResource.PolicyDefinitionReferenceId)
         {   
-            Write-Verbose " Processing Policy Set"
+            Write-Verbose " Processing Policy Set" -Verbose
 
             if($NonCompliantResource.ResourceId -in $ResourcesProcessed){
-                Write-Verbose " Add item '$($NonCompliantResource.ResourceId)' to DuplicateResources list"
+                Write-Verbose " Add item '$($NonCompliantResource.ResourceId)' to DuplicateResources list" -Verbose
                 $DuplicateResources += $NonCompliantResource
             }
             else{
-                Write-Verbose " Process item '$($NonCompliantResource.ResourceId)'"
+                Write-Verbose " Process item '$($NonCompliantResource.ResourceId)'" -Verbose
 
                 $NoOfRemediationTasks = Start-AzPolicyRemediationPerResource -PolicyAssignmentId $NonCompliantResource.PolicyAssignmentId -PolicyDefinitionId $NonCompliantResource.PolicyDefinitionId -PolicyReferenceId $NonCompliantResource.PolicyDefinitionReferenceId -ResourceId $NonCompliantResource.ResourceId
                 $NoOfRemediationTasksCreated += $NoOfRemediationTasks
@@ -366,10 +366,21 @@ do{
 } until ($DuplicateResources.Count -eq 0)
 # end region
 
+if ($NoOfRemediationTasksCreated -gt 0) {
+    Write-Verbose "-------------------------------------------------------------------------------------------------------------------" -Verbose
+    Write-Verbose " Waiting for remediation task(s) to complete..." -Verbose
+    Write-Verbose "-------------------------------------------------------------------------------------------------------------------" -Verbose
+
+    while (Get-Job -State 'Running') {
+        Write-Verbose "`tWaiting for '$($(Get-Job -State 'Running' | Measure-Object).count)' jobs to complete..." -Verbose
+        Start-Sleep -Seconds 20
+    }
+}
+
 Write-Verbose "-------------------------------------------------------------------------------------------------------------------" -Verbose
 Write-Verbose " Job(s) Report" -Verbose 
 Write-Verbose "-------------------------------------------------------------------------------------------------------------------" -Verbose
-Write-Verbose " TotalNoOfNonCompliantResources    : $($TotalNoOfNonCompliantResources.Count)" -Verbose
+Write-Verbose " TotalNoOfNonCompliantResources    : $(($NonCompliantResources | Measure-Object).Count)" -Verbose
 Write-Verbose " FilteredNoOfNonCompliantResources : $($FilteredNoOfNonCompliantResources.Count)" -Verbose
 Write-Verbose " NoOfRemediationTasksCreated       : $NoOfRemediationTasksCreated" -Verbose
 Write-Verbose "-------------------------------------------------------------------------------------------------------------------" -Verbose
