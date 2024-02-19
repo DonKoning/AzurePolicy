@@ -32,9 +32,9 @@
     Display verbose output.
 
 .NOTES
-  Version:        1.0
+  Version:        1.3
   Author:         Don Koning
-  Creation Date:  29-5-2022
+  Creation Date:  17-1-2024
 #>
 
 
