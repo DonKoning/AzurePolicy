@@ -3,6 +3,9 @@
 pr: none
 trigger: none
 
+pool:
+    vmImage: windows-latest
+
 parameters:
   - name: scope
     type: string

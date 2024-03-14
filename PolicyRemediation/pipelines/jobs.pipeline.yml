@@ -33,7 +33,7 @@ jobs:
           azureSubscription: ${{ parameters.serviceConnection }}
           azurePowerShellVersion: LatestVersion
           scriptType: 'FilePath'
-          ScriptPath: policyRemediation/scripts/Create-ParameterSet.ps1
+          ScriptPath: PolicyRemediation/scripts/Create-ParameterSet.ps1
           ScriptArguments: 
             '-scope ${{ parameters.scope }}
             -managementGroupName ${{ parameters.managementGroupName }}
@@ -49,7 +49,7 @@ jobs:
           azureSubscription: ${{ parameters.serviceConnection }}
           azurePowerShellVersion: LatestVersion
           scriptType: 'FilePath'
-          ScriptPath: policyRemediation/scripts/Start-PolicyRemediation.ps1
+          ScriptPath: PolicyRemediation/scripts/Start-PolicyRemediation.ps1
           ScriptArguments: '$(createParamSet.parameterSet)'
 
     ############################################################################################################
