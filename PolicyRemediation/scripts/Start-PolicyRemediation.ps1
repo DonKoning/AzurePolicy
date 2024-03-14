@@ -197,7 +197,10 @@ switch ($PSCmdlet.ParameterSetName)
         $ManagementGroupObj = Get-AzManagementGroup -GroupName $ManagementGroupName -ErrorAction SilentlyContinue
         if($ManagementGroupObj) 
         {
-            $NonCompliantResources = Get-AzPolicyState -ManagementGroupName $ManagementGroupObj.Name | Where-Object { $_.PolicyDefinitionAction -in $SupportedEffects -and $_.ComplianceState -eq 'NonCompliant' }
+            $NonCompliantResources = Get-AzPolicyState -ManagementGroupName $ManagementGroupObj.Name -Filter " `
+                (PolicyAssignmentName eq '$($PolicyAssignmentName)' or PolicyDefinitionName eq '$($PolicyDefinitionName)') `
+                and ComplianceState eq 'NonCompliant' `
+                "
         }
         else
         {
@@ -217,7 +220,10 @@ switch ($PSCmdlet.ParameterSetName)
         $SubscriptionObj = Get-AzSubscription -SubscriptionId $SubscriptionId -ErrorAction SilentlyContinue
         if($SubscriptionObj) 
         {
-            $NonCompliantResources = Get-AzPolicyState -SubscriptionId $SubscriptionObj.Id | Where-Object { $_.PolicyDefinitionAction -in $SupportedEffects -and $_.ComplianceState -eq 'NonCompliant' }
+            $NonCompliantResources = Get-AzPolicyState -SubscriptionId $SubscriptionObj.Id -Filter " `
+                (PolicyAssignmentName eq '$($PolicyAssignmentName)' or PolicyDefinitionName eq '$($PolicyDefinitionName)') `
+                and ComplianceState eq 'NonCompliant' `
+            "
         }
         else
         {
